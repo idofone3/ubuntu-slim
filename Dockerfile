@@ -1,19 +1,19 @@
 # Use the official Debian slim image
 FROM debian:stable-slim
 
-# Install OpenSSH server
+# Install OpenSSH server and sudo
 RUN apt-get update && \
-    apt-get install -y openssh-server && \
+    apt-get install -y openssh-server sudo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Create the privilege separation directory required by sshd
-# -p prevents the error if the directory already exists in the base image
 RUN mkdir -p /var/run/sshd
 
-# Set up user 'ash' with password 'root'
+# Set up user 'ash' with password 'root' and add to sudo group
 RUN useradd -rm -d /home/ash -s /bin/bash ash && \
-    echo "ash:root" | chpasswd
+    echo "ash:root" | chpasswd && \
+    usermod -aG sudo ash
 
 # Configure SSH daemon
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
