@@ -8,7 +8,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Create the privilege separation directory required by sshd
-RUN mkdir /var/run/sshd
+# -p prevents the error if the directory already exists in the base image
+RUN mkdir -p /var/run/sshd
 
 # Set up user 'ash' with password 'root'
 RUN useradd -rm -d /home/ash -s /bin/bash ash && \
